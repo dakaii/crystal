@@ -229,6 +229,24 @@ describe "Semantic: class" do
     type.instance_vars["@value"].type.should eq(mod.bool)
   end
 
+  # bin/crystal spec/compiler/semantic/class_spec.cr
+  it "does automatic type inference of new for default generic types" do
+    result = assert_type("
+      class Box(T)
+        def initialize(a : T)
+        end
+      end
+
+      Box(Int32).new
+      Box.new 1
+      Box.new true
+      Box.new
+      ") { generic_class "Box", int32 }
+    mod = result.program
+    type = result.node.type.as(GenericClassInstanceType)
+    type.type_vars["T"].type.should eq(mod.int32)
+  end
+
   it "does automatic type inference of new for nested generic type" do
     nodes = parse("
       class Foo
