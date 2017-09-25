@@ -232,6 +232,7 @@ describe "Semantic: class" do
   # bin/crystal spec/compiler/semantic/class_spec.cr
   # bin/crystal build -d spec/compiler/semantic/class_spec.cr
   # lldb ./class_spec
+  puts "here\n"
   it "does automatic type inference of new for default generic types" do
     result = assert_type("
       class Box(T)
@@ -249,6 +250,7 @@ describe "Semantic: class" do
     type.type_vars["T"].type.should eq(mod.int32)
     type.instance_vars["@value"].type.should eq(mod.int32)
   end
+  puts "over\n"
 
   it "does automatic type inference of new for nested generic type" do
     nodes = parse("
