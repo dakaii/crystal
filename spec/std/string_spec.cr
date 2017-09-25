@@ -1206,6 +1206,11 @@ describe "String" do
       replaced.should eq("fexexbar")
     end
 
+    it "gsubs char with string (nop)" do
+      s = "foobar"
+      s.gsub('x', "yz").should be(s)
+    end
+
     it "gsubs char with string depending on the char" do
       replaced = "foobar".gsub do |char|
         case char
@@ -2161,6 +2166,17 @@ describe "String" do
     "foo".compare("FOX", case_insensitive: true).should eq(-1)
     "fox".compare("FOO", case_insensitive: true).should eq(1)
     "fo\u{0000}".compare("FO", case_insensitive: true).should eq(1)
+  end
+
+  it "builds with write_byte" do
+    string = String.build do |io|
+      255_u8.times do |byte|
+        io.write_byte(byte)
+      end
+    end
+    255.times do |i|
+      string.byte_at(i).should eq(i)
+    end
   end
 
   it "raises if String.build negative capacity" do
